@@ -1,12 +1,12 @@
 import { useCallback, useState, useEffect, useRef } from 'react';
 import { PATTERNS } from './constants/patterns';
-import { 
-    FaTrash, 
-    FaPencilAlt, 
-    FaEraser, 
-    FaStepForward, 
-    FaPlay, 
-    FaStop 
+import {
+    FaTrash,
+    FaPencilAlt,
+    FaEraser,
+    FaStepForward,
+    FaPlay,
+    FaStop
 } from 'react-icons/fa';
 
 
@@ -44,8 +44,10 @@ function Grid() {
     const [isPanning, setIsPanning] = useState(false);
     const [lastPanPosition, setLastPanPosition] = useState<{ x: number, y: number } | null>(null);
     const [generation, setGeneration] = useState(0);
+    // for auto start
+    // const [hasAutoStarted, setHasAutoStarted] = useState(false);
     const [grid, setGrid] = useState<boolean[][]>(() =>
-        Array(GRID_ROWS).fill(null).map(() => Array(GRID_COLS).fill(false))
+        Array(GRID_ROWS).fill(null).map(() => Array(GRID_COLS).fill(false).map(() => Math.random() < 0.1))
     );
 
     const drawCanvas = useCallback(() => {
@@ -265,6 +267,7 @@ function Grid() {
         const patternName = e.target.value;
         if (patternName && patternName !== '') {
             loadPattern(patternName as string);
+            setGeneration(0);
         }
     }
 
@@ -327,6 +330,14 @@ function Grid() {
         }
         //eslint-disable-next-line react-hooks/exhaustive-deps
     }, [intervalSpeed]);
+    
+    // for autostart
+    // useEffect(() => {
+    //     if (CANVAS_WIDTH > 0 && CANVAS_HEIGHT > 0 && !hasAutoStarted) {
+    //         setHasAutoStarted(true);
+    //         simulate();
+    //     }
+    // }, [CANVAS_WIDTH, CANVAS_HEIGHT, hasAutoStarted, simulate]);
 
     return (
         <div
@@ -377,7 +388,7 @@ function Grid() {
             </div>
 
             <div style={{
-                marginTop: '16px', display: 'flex', gap: '8px', 
+                marginTop: '16px', display: 'flex', gap: '8px',
             }}>
                 <button
                     onClick={resetGrid}
@@ -468,7 +479,6 @@ function Grid() {
                     ))}
                 </select>
             </div>
-            
             <div style={{
                 marginTop: '16px',
                 padding: '12px 20px',
